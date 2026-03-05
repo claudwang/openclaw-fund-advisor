@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw 基金投资顾问 | 版本 2</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #4f46e5 0%, #f77252 100%);
+            --card-bg: #ffffff;
+            --text-primary: #1a1a2a;
+            --text-secondary: #4a5568;
+            --accent: #f77252;
+            --accent-light: #f9a825;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 60px;
+        }
+
+        .hero-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--accent-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        .card-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .install-card {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border: none;
+        }
+
+        .install-card:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .install-card h3,
+        .install-card p {
+            color: white;
+        }
+
+        .install-card p {
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .code-box {
+            background: #1e1e2e;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .code-box label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #d4a373;
+        }
+
+        .code-box code {
+            display: block;
+            background: #2d3748;
+            color: #a7f3d0;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: white;
+            color: var(--accent);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+            color: white;
+        }
+
+        .steps {
+            background: #f8fafc;
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 32px;
+        }
+
+        .steps h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 12px 0;
+        }
+
+        .step-num {
+            background: var(--accent);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .footer-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .section {
+                padding: 28px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="hero-icon">💰</div>
+            <h1>Fund Advisor</h1>
+            <p>
+                智能基金投资顾问 · 市场分析 · 自动推荐 · 组合监控<br>
+                由 AI 驱动，让投资决策更智慧
+            </p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">✨ 核心功能</div>
+            <div class="grid">
+                <div class="card">
+                    <span class="card-icon">📊</span>
+                    <h3>每日市场分析</h3>
+                    <p>实时市场情绪判断，识别热门投资主题，提供 A 股板块涨幅排行</p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">🎯</span>
+                    <h3>智能基金推荐</h3>
+                    <p>基于 30 天历史数据深度分析，推荐具有潜力的优质基金</p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">💼</span>
+                    <h3>投资组合监控</h3>
+                    <p>自动跟踪持仓收益变化，提供智能止盈补仓建议</p>
+                </div>
+
+                <div class="card">
+                    <span class="card-icon">⏰</span>
+                    <h3>定时自动推送</h3>
+                    <p>每日 09:30 市场分析、15:00 组合报告、17:00 A 股日报</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🚀 快速开始</div>
+            <div class="card install-card">
+                <h3>一键安装</h3>
+                <p>复制命令并在终端运行，即可完成整个 Skill 的安装和配置</p>
+                <div class="code-box">
+                    <label>安装命令：</label>
+                    <code>bash -c "$(curl -s https://raw.githubusercontent.com/claudwang/openclaw-fund-advisor/main/install.sh)"</code>
+                    <button class="copy-btn" onclick="copyCode()">
+                        📋 复制命令
+                    </button>
+                </div>
+            </div>
+
+            <div class="steps">
+                <h3>安装后的配置</h3>
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <div class="step-text">编辑持仓文件：~/.openclaw/skills/fund-advisor/references/portfolio.md</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <div class="step-text">运行分析脚本：cd ~ && python3 scripts/fund_recommender.py</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <div class="step-text">配置 cron 任务实现定时推送</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-links">
+                <a href="https://github.com/claudwang/openclaw-fund-advisor" target="_blank" class="footer-link">📦 GitHub</a>
+                <a href="https://github.com/claudwang/openclaw-fund-advisor/blob/main/SKILL.md" target="_blank" class="footer-link">📖 文档</a>
+                <a href="https://docs.openclaw.ai" target="_blank" class="footer-link">🚀 API</a>
+            </div>
+            <div class="footer-text">
+                数据来源：东方财富网 · 风险提示：本工具仅供参考，不构成投资建议
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyCode() {
+            const command = 'bash -c "$(curl -s https://raw.githubusercontent.com/claudwang/openclaw-fund-advisor/main/install.sh)"';
+            navigator.clipboard.writeText(command).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerHTML = '✅ 已复制';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = '📋 复制命令';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('复制失败，请手动复制命令');
+            });
+        }
+    </script>
+</body>
+</html>
