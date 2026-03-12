@@ -3,408 +3,724 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>你的私人智能投资顾问 | 版本 2</title>
+    <title>FundAI - 智能基金投资顾问</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
         :root {
-            --bg-gradient: linear-gradient(135deg, #4f46e5 0%, #f77252 100%);
-            --card-bg: #ffffff;
-            --text-primary: #1a1a2a;
-            --text-secondary: #4a5568;
-            --accent: #f77252;
-            --accent-light: #f9a825;
-            --border: #e5e7eb;
+            --bg-primary: #0a0b0f;
+            --bg-secondary: #12141a;
+            --bg-card: #181a22;
+            --bg-card-hover: #1e2130;
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(99,102,241,0.3);
+            --text-primary: #f0f0f5;
+            --text-secondary: #8b8fa3;
+            --text-muted: #5a5e72;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-glow: rgba(99,102,241,0.15);
+            --green: #22c55e;
+            --green-glow: rgba(34,197,94,0.15);
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --gradient-hero: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.15), transparent);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            padding: 40px 20px;
+            background: var(--bg-primary);
             color: var(--text-primary);
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 60px 40px;
-            background: var(--card-bg);
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            margin-bottom: 60px;
-        }
-
-        .hero-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            letter-spacing: -2px;
-            color: var(--text-primary);
-        }
-
-        .hero p {
-            font-size: 20px;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
             line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .section {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        /* === NAV === */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(10,11,15,0.75);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0 32px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            display: flex; align-items: center; gap: 10px;
+            font-weight: 700; font-size: 1.15em; color: var(--text-primary);
+            text-decoration: none;
+        }
+        .nav-logo-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: var(--gradient-1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none;
+            padding: 8px 16px; border-radius: 8px;
+            font-size: 0.9em; font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-cta {
+            background: var(--accent) !important; color: white !important;
+            padding: 8px 20px !important; border-radius: 8px !important;
+            font-weight: 600 !important;
+        }
+        .nav-cta:hover { background: var(--accent-light) !important; }
 
+        /* === HERO === */
+        .hero {
+            position: relative;
+            padding: 160px 32px 100px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: var(--gradient-hero);
+            pointer-events: none;
+        }
+        .hero-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 60% 40% at 50% 30%, black, transparent);
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--accent-glow);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 100px; padding: 6px 18px 6px 8px;
+            font-size: 0.82em; font-weight: 500;
+            color: var(--accent-light); margin-bottom: 28px;
+            position: relative;
+        }
+        .hero-badge-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--green);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+        }
+        .hero h1 {
+            font-size: clamp(2.5em, 6vw, 4.2em);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.1; margin-bottom: 24px;
+            position: relative;
+        }
+        .hero h1 .gradient-text {
+            background: var(--gradient-1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: clamp(1em, 2vw, 1.2em);
+            color: var(--text-secondary); max-width: 600px;
+            margin: 0 auto 48px; line-height: 1.7;
+            position: relative;
+        }
+        .hero-actions {
+            display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+            position: relative;
+        }
+        .btn-primary {
+            background: var(--gradient-1); color: white;
+            padding: 14px 32px; border-radius: 12px;
+            font-weight: 600; font-size: 1em; border: none;
+            cursor: pointer; transition: all 0.3s;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 24px rgba(99,102,241,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99,102,241,0.4); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05); color: var(--text-primary);
+            padding: 14px 32px; border-radius: 12px;
+            font-weight: 600; font-size: 1em;
+            border: 1px solid var(--border); cursor: pointer;
+            transition: all 0.3s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+            margin-top: 72px; position: relative;
+        }
+        .stat { text-align: center; }
+        .stat-value {
+            font-size: 2em; font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label { font-size: 0.85em; color: var(--text-muted); margin-top: 4px; }
+
+        /* === FEATURES === */
+        .section { padding: 100px 32px; max-width: 1200px; margin: 0 auto; }
+        .section-header {
+            text-align: center; margin-bottom: 64px;
+        }
+        .section-tag {
+            display: inline-block; font-size: 0.82em; font-weight: 600;
+            color: var(--accent-light); text-transform: uppercase;
+            letter-spacing: 0.08em; margin-bottom: 16px;
+        }
         .section-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-primary);
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            font-weight: 800; letter-spacing: -0.02em;
+            line-height: 1.15; margin-bottom: 16px;
+        }
+        .section-desc {
+            color: var(--text-secondary); font-size: 1.1em;
+            max-width: 560px; margin: 0 auto;
         }
 
-        .grid {
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
-
-        .card {
-            background: var(--accent-light);
+        .feature-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-            transition: all 0.3s ease;
+            border-radius: 16px; padding: 36px 32px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; overflow: hidden;
         }
-
-        .card:hover {
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            border-color: var(--accent);
         }
-
-        .card-icon {
-            font-size: 36px;
-            margin-bottom: 16px;
-            display: block;
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon-wrap {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin-bottom: 20px;
         }
-
-        .card h3 {
-            font-size: 20px;
-            font-weight: 600;
+        .fi-purple { background: rgba(99,102,241,0.12); }
+        .fi-green { background: rgba(34,197,94,0.12); }
+        .fi-amber { background: rgba(245,158,11,0.12); }
+        .fi-cyan { background: rgba(6,182,212,0.12); }
+        .feature-card h3 {
+            font-size: 1.2em; font-weight: 700;
             margin-bottom: 12px;
-            color: var(--text-primary);
+        }
+        .feature-card p {
+            color: var(--text-secondary); font-size: 0.92em; line-height: 1.7;
+        }
+        .feature-card ul {
+            list-style: none; margin-top: 12px;
+        }
+        .feature-card ul li {
+            color: var(--text-secondary); font-size: 0.88em;
+            padding: 4px 0; padding-left: 20px; position: relative;
+        }
+        .feature-card ul li::before {
+            content: '→'; position: absolute; left: 0; color: var(--accent-light);
         }
 
-        .card p {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.6;
+        /* === HOW IT WORKS === */
+        .how-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+            position: relative;
         }
+        .how-grid::before {
+            content: ''; position: absolute;
+            top: 40px; left: 16.6%; right: 16.6%; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light), var(--accent));
+            opacity: 0.2;
+        }
+        .how-card { text-align: center; position: relative; }
+        .how-num {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--bg-card); border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1em; color: var(--accent-light);
+            margin: 0 auto 20px; position: relative; z-index: 1;
+        }
+        .how-card h3 { font-size: 1.15em; font-weight: 700; margin-bottom: 8px; }
+        .how-card p { color: var(--text-secondary); font-size: 0.92em; max-width: 280px; margin: 0 auto; }
 
-        .install-card {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            border: none;
+        /* === INSTALL === */
+        .install-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px; padding: 56px 48px;
+            position: relative; overflow: hidden;
         }
-
-        .install-card:hover {
-            transform: translateY(-4px) scale(1.02);
+        .install-box::after {
+            content: ''; position: absolute; top: -50%; right: -20%;
+            width: 400px; height: 400px; border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            pointer-events: none;
         }
-
-        .install-card h3,
-        .install-card p {
-            color: white;
+        .terminal {
+            background: #0d0e14; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; overflow: hidden; margin: 32px 0;
+            position: relative;
         }
-
-        .install-card p {
-            line-height: 1.7;
-            margin-bottom: 24px;
+        .terminal-header {
+            display: flex; align-items: center; gap: 8px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-
-        .code-box {
-            background: #1e1e2e;
-            border-radius: 12px;
-            padding: 24px;
-            margin: 24px 0;
+        .terminal-dot {
+            width: 12px; height: 12px; border-radius: 50%;
         }
-
-        .code-box label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #d4a373;
+        .terminal-dot.red { background: #ef4444; }
+        .terminal-dot.yellow { background: #f59e0b; }
+        .terminal-dot.green { background: #22c55e; }
+        .terminal-title {
+            flex: 1; text-align: center;
+            font-size: 0.82em; color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
         }
-
-        .code-box code {
-            display: block;
-            background: #2d3748;
-            color: #a7f3d0;
-            padding: 16px 20px;
-            border-radius: 8px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            overflow-x: auto;
-            word-break: break-all;
+        .terminal-body {
+            padding: 24px; position: relative;
         }
+        .terminal-body code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88em; color: #a5b4fc;
+            line-height: 1.8; word-break: break-all;
+        }
+        .terminal-body .prompt { color: var(--green); }
+        .terminal-body .cmd { color: #f0f0f5; }
+        .terminal-body .flag { color: #fbbf24; }
 
         .copy-btn {
-            background: white;
-            color: var(--accent);
-            border: none;
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: var(--gradient-1); color: white;
+            border: none; padding: 12px 28px; border-radius: 10px;
+            font-weight: 600; font-size: 0.95em; cursor: pointer;
+            transition: all 0.3s; position: relative; z-index: 1;
         }
+        .copy-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
+        .copy-btn.copied { background: var(--green); }
 
-        .copy-btn:hover {
-            background: var(--accent-light);
-            transform: scale(1.05);
+        .steps-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px; margin-top: 40px; position: relative; z-index: 1;
         }
-
-        .copy-btn:active {
-            transform: scale(0.95);
-        }
-
-        .copy-btn.copied {
-            background: #10b981;
-            color: white;
-        }
-
-        .steps {
-            background: #f8fafc;
-            border: 1px dashed var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            margin-top: 32px;
-        }
-
-        .steps h3 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: var(--text-primary);
-        }
-
         .step-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 16px;
-            padding: 12px 0;
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px; padding: 16px 20px;
+            font-size: 0.9em; color: var(--text-secondary);
         }
-
         .step-num {
-            background: var(--accent);
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 600;
+            width: 28px; height: 28px; border-radius: 8px;
+            background: var(--accent-glow); border: 1px solid rgba(99,102,241,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.82em; color: var(--accent-light);
             flex-shrink: 0;
         }
 
-        .step-text {
-            font-size: 15px;
-            line-height: 1.5;
-            color: var(--text-secondary);
+        /* === SCHEDULE === */
+        .schedule-cards {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
         }
-
-        .footer {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
+        .schedule-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px;
             text-align: center;
-            margin-top: 40px;
+            transition: all 0.3s;
         }
+        .schedule-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+        .schedule-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2em; font-weight: 800;
+            background: var(--gradient-2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
+        }
+        .schedule-card h3 { font-size: 1.1em; font-weight: 700; margin-bottom: 8px; }
+        .schedule-card p { color: var(--text-secondary); font-size: 0.88em; }
 
+        /* === CTA === */
+        .cta-section {
+            padding: 100px 32px;
+            text-align: center;
+        }
+        .cta-box {
+            max-width: 700px; margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px; padding: 72px 48px;
+            position: relative; overflow: hidden;
+        }
+        .cta-box::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, var(--accent-glow), transparent 70%);
+        }
+        .cta-box h2 {
+            font-size: 2.2em; font-weight: 800;
+            letter-spacing: -0.02em; margin-bottom: 16px;
+            position: relative;
+        }
+        .cta-box p {
+            color: var(--text-secondary); font-size: 1.1em;
+            margin-bottom: 36px; position: relative;
+        }
+        .cta-box .btn-primary { position: relative; }
+
+        /* === FOOTER === */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 48px 32px; text-align: center;
+        }
         .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 24px;
+            display: flex; justify-content: center; gap: 24px;
+            flex-wrap: wrap; margin-bottom: 24px;
+        }
+        .footer-links a {
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.9em; font-weight: 500;
+            transition: color 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+        .footer-note {
+            color: var(--text-muted); font-size: 0.82em;
+            line-height: 1.8;
         }
 
-        .footer-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 15px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        /* === ANIMATIONS === */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        .animate { animation: fadeUp 0.7s ease forwards; opacity: 0; }
+        .d1 { animation-delay: 0.1s; } .d2 { animation-delay: 0.2s; }
+        .d3 { animation-delay: 0.3s; } .d4 { animation-delay: 0.4s; }
+        .d5 { animation-delay: 0.5s; } .d6 { animation-delay: 0.6s; }
 
-        .footer-link:hover {
-            color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .footer-text {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 20px 15px;
-            }
-
-            .hero h1 {
-                font-size: 32px;
-            }
-
-            .hero p {
-                font-size: 16px;
-            }
-
-            .section {
-                padding: 28px;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
+            .nav-links { display: none; }
+            .hero { padding: 130px 24px 70px; }
+            .section { padding: 60px 24px; }
+            .how-grid { grid-template-columns: 1fr; }
+            .how-grid::before { display: none; }
+            .schedule-cards { grid-template-columns: 1fr; }
+            .install-box { padding: 36px 24px; }
+            .cta-box { padding: 48px 24px; }
+            .stats-bar { gap: 32px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero">
-            <div class="hero-icon">💰</div>
-            <h1>Fund Advisor</h1>
-            <p>
-                你的私人智能投资顾问 · 市场分析 · 自动推荐 · 组合监控<br>
-                由 AI 驱动，让投资决策更智慧
-            </p>
+
+<!-- Nav -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">
+            <div class="nav-logo-icon">🦞</div>
+            FundAI
+        </a>
+        <div class="nav-links">
+            <a href="#features">功能</a>
+            <a href="#schedule">推送</a>
+            <a href="#install">安装</a>
+            <a href="https://github.com/claudwang/openclaw-fund-advisor" target="_blank" class="nav-cta">GitHub ↗</a>
         </div>
+    </div>
+</nav>
 
-        <div class="section">
-            <div class="section-title">✨ 核心功能</div>
-            <div class="grid">
-                <div class="card">
-                    <span class="card-icon">📊</span>
-                    <h3>每日市场分析</h3>
-                    <p>实时市场情绪判断，识别热门投资主题，提供 A 股板块涨幅排行</p>
-                </div>
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-badge animate d1">
+        <span class="hero-badge-dot"></span>
+        Powered by OpenClaw AI
+    </div>
+    <h1 class="animate d2">
+        你的私人<br><span class="gradient-text">智能基金投资顾问</span>
+    </h1>
+    <p class="hero-sub animate d3">
+        AI 驱动的基金分析与推荐系统，实时市场洞察、智能选基、<br class="hide-mobile">自动推送，让投资决策更科学
+    </p>
+    <div class="hero-actions animate d4">
+        <a href="#install" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            一键安装
+        </a>
+        <a href="https://github.com/claudwang/openclaw-fund-advisor" target="_blank" class="btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            查看源码
+        </a>
+    </div>
+    <div class="stats-bar animate d5">
+        <div class="stat">
+            <div class="stat-value">30天</div>
+            <div class="stat-label">历史数据分析</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">TOP 5</div>
+            <div class="stat-label">每日精选基金</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">3次/日</div>
+            <div class="stat-label">自动策略推送</div>
+        </div>
+    </div>
+</section>
 
-                <div class="card">
-                    <span class="card-icon">🎯</span>
-                    <h3>智能基金推荐</h3>
-                    <p>基于 30 天历史数据深度分析，推荐具有潜力的优质基金</p>
-                </div>
+<!-- Features -->
+<section class="section" id="features">
+    <div class="section-header">
+        <div class="section-tag">核心能力</div>
+        <h2 class="section-title">让 AI 成为你的投资搭档</h2>
+        <p class="section-desc">从市场分析到基金推荐，从持仓监控到策略推送，全链路智能化</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon-wrap fi-purple">📊</div>
+            <h3>每日市场分析</h3>
+            <p>实时追踪 A 股市场动态，精准把握投资脉搏</p>
+            <ul>
+                <li>市场情绪判断（积极 / 中性 / 悲观）</li>
+                <li>热门投资主题识别</li>
+                <li>A 股板块涨幅 TOP 10</li>
+            </ul>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap fi-green">🎯</div>
+            <h3>智能基金推荐</h3>
+            <p>数据驱动的选基策略，深度挖掘潜力基金</p>
+            <ul>
+                <li>30 天历史数据回测分析</li>
+                <li>推荐买入基金 TOP 5</li>
+                <li>评分、胜率、最大回撤指标</li>
+            </ul>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap fi-amber">💼</div>
+            <h3>投资组合监控</h3>
+            <p>7×24 自动盯盘，不错过任何操作窗口</p>
+            <ul>
+                <li>持仓收益实时追踪</li>
+                <li>智能止盈 / 补仓建议</li>
+                <li>即时操作提醒推送</li>
+            </ul>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap fi-cyan">⏰</div>
+            <h3>定时自动推送</h3>
+            <p>在你需要的时间，推送你需要的信息</p>
+            <ul>
+                <li>09:30 每日市场分析</li>
+                <li>15:00 投资组合策略报告</li>
+                <li>17:00 A 股板块日报</li>
+            </ul>
+        </div>
+    </div>
+</section>
 
-                <div class="card">
-                    <span class="card-icon">💼</span>
-                    <h3>投资组合监控</h3>
-                    <p>自动跟踪持仓收益变化，提供智能止盈补仓建议</p>
-                </div>
+<!-- Schedule -->
+<section class="section" id="schedule">
+    <div class="section-header">
+        <div class="section-tag">推送计划</div>
+        <h2 class="section-title">全天候智能投报</h2>
+        <p class="section-desc">每日三次定时推送，覆盖开盘、收盘和盘后全时段</p>
+    </div>
+    <div class="schedule-cards">
+        <div class="schedule-card">
+            <div class="schedule-time">09:30</div>
+            <h3>开盘分析</h3>
+            <p>市场情绪判断 · 热门主题 · 板块排名</p>
+        </div>
+        <div class="schedule-card">
+            <div class="schedule-time">15:00</div>
+            <h3>收盘策略</h3>
+            <p>持仓收益报告 · 止盈补仓建议 · 操作提醒</p>
+        </div>
+        <div class="schedule-card">
+            <div class="schedule-time">17:00</div>
+            <h3>盘后日报</h3>
+            <p>A 股板块复盘 · 资金流向 · 次日展望</p>
+        </div>
+    </div>
+</section>
 
-                <div class="card">
-                    <span class="card-icon">⏰</span>
-                    <h3>定时自动推送</h3>
-                    <p>每日 09:30 市场分析、15:00 组合报告、17:00 A 股日报</p>
-                </div>
+<!-- How it works -->
+<section class="section">
+    <div class="section-header">
+        <div class="section-tag">工作原理</div>
+        <h2 class="section-title">三步开启智能投资</h2>
+    </div>
+    <div class="how-grid">
+        <div class="how-card">
+            <div class="how-num">1</div>
+            <h3>安装 Skill</h3>
+            <p>一条命令完成安装，自动配置数据源和推送通道</p>
+        </div>
+        <div class="how-card">
+            <div class="how-num">2</div>
+            <h3>配置持仓</h3>
+            <p>编辑持仓文件，记录你的基金持仓和关注列表</p>
+        </div>
+        <div class="how-card">
+            <div class="how-num">3</div>
+            <h3>接收推送</h3>
+            <p>每日定时收到 AI 分析报告和操作建议</p>
+        </div>
+    </div>
+</section>
+
+<!-- Install -->
+<section class="section" id="install">
+    <div class="section-header">
+        <div class="section-tag">快速开始</div>
+        <h2 class="section-title">一键安装，即刻使用</h2>
+        <p class="section-desc">复制命令到终端运行即可，整个过程不到一分钟</p>
+    </div>
+    <div class="install-box">
+        <div class="terminal">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">Terminal</span>
+            </div>
+            <div class="terminal-body">
+                <code><span class="prompt">$ </span><span class="cmd">bash</span> <span class="flag">-c</span> <span class="cmd">"$(curl -s https://raw.githubusercontent.com/claudwang/openclaw-fund-advisor/main/install.sh)"</span></code>
             </div>
         </div>
+        <button class="copy-btn" onclick="copyCode()">📋 复制安装命令</button>
 
-        <div class="section">
-            <div class="section-title">🚀 快速开始</div>
-            <div class="card install-card">
-                <h3>一键安装</h3>
-                <p>复制命令并在终端运行，即可完成整个 Skill 的安装和配置</p>
-                <div class="code-box">
-                    <label>安装命令：</label>
-                    <code>bash -c "$(curl -s https://raw.githubusercontent.com/claudwang/openclaw-fund-advisor/main/install.sh)"</code>
-                    <button class="copy-btn" onclick="copyCode()">
-                        📋 复制命令
-                    </button>
-                </div>
+        <div class="steps-grid">
+            <div class="step-item">
+                <span class="step-num">1</span>
+                复制安装命令
             </div>
-
-            <div class="steps">
-                <h3>安装后的配置</h3>
-                <div class="step-item">
-                    <div class="step-num">1</div>
-                    <div class="step-text">编辑持仓文件：~/.openclaw/skills/fund-advisor/references/portfolio.md</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">2</div>
-                    <div class="step-text">运行分析脚本：cd ~ && python3 scripts/fund_recommender.py</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">3</div>
-                    <div class="step-text">配置 cron 任务实现定时推送</div>
-                </div>
+            <div class="step-item">
+                <span class="step-num">2</span>
+                终端粘贴运行
             </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-links">
-                <a href="https://github.com/claudwang/openclaw-fund-advisor" target="_blank" class="footer-link">📦 GitHub</a>
-                <a href="https://github.com/claudwang/openclaw-fund-advisor/blob/main/SKILL.md" target="_blank" class="footer-link">📖 文档</a>
-                <a href="https://docs.openclaw.ai" target="_blank" class="footer-link">🚀 API</a>
+            <div class="step-item">
+                <span class="step-num">3</span>
+                等待安装完成
             </div>
-            <div class="footer-text">
-                数据来源：东方财富网 · 风险提示：本工具仅供参考，不构成投资建议
+            <div class="step-item">
+                <span class="step-num">4</span>
+                编辑持仓文件
+            </div>
+            <div class="step-item">
+                <span class="step-num">5</span>
+                开始使用！
             </div>
         </div>
     </div>
+</section>
 
-    <script>
-        function copyCode() {
-            const command = 'bash -c "$(curl -s https://raw.githubusercontent.com/claudwang/openclaw-fund-advisor/main/install.sh)"';
-            navigator.clipboard.writeText(command).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                btn.innerHTML = '✅ 已复制';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.innerHTML = '📋 复制命令';
-                    btn.classList.remove('copied');
-                }, 2000);
-            }).catch(err => {
-                alert('复制失败，请手动复制命令');
-            });
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-box">
+        <h2>准备好了吗？</h2>
+        <p>立即安装，让你的 AI 助手成为你的专属基金投资顾问</p>
+        <a href="#install" class="btn-primary">
+            立即安装 →
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-links">
+        <a href="https://github.com/claudwang/openclaw-fund-advisor" target="_blank">📦 GitHub 仓库</a>
+        <a href="https://github.com/claudwang/openclaw-fund-advisor/blob/main/SKILL.md" target="_blank">📖 使用文档</a>
+        <a href="https://docs.openclaw.ai" target="_blank">📚 OpenClaw 文档</a>
+    </div>
+    <div class="footer-note">
+        💡 数据来源：东方财富网&emsp;·&emsp;
+        ⚠️ 风险提示：本工具提供的分析仅供参考，不构成投资建议
+    </div>
+</footer>
+
+<script>
+function copyCode() {
+    const cmd = 'bash -c "$(curl -s https://raw.githubusercontent.com/claudwang/openclaw-fund-advisor/main/install.sh)"';
+    navigator.clipboard.writeText(cmd).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✅ 已复制到剪贴板！';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '📋 复制安装命令';
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = cmd; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✅ 已复制到剪贴板！';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '📋 复制安装命令';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+
+// Intersection Observer for animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.style.animationPlayState = 'running';
+            observer.unobserve(e.target);
         }
-    </script>
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.feature-card, .how-card, .schedule-card, .install-box, .cta-box').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    observer.observe(el);
+});
+
+// Trigger animation on observe
+const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateY(0)';
+            animObserver.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.feature-card, .how-card, .schedule-card, .install-box, .cta-box').forEach(el => {
+    animObserver.observe(el);
+});
+</script>
+
 </body>
 </html>
